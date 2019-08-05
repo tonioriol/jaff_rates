@@ -1,12 +1,13 @@
 const rates = [
-    { 'from': 'EUR', 'to': 'USD', 'rate': '1.359' },
-    { 'from': 'CAD', 'to': 'EUR', 'rate': '0.732' },
-    { 'from': 'USD', 'to': 'EUR', 'rate': '0.736' },
-    { 'from': 'EUR', 'to': 'CAD', 'rate': '1.366' }
+    { 'from': 'USD', 'to': 'AUD', 'rate': '1.44' },
+    { 'from': 'AUD', 'to': 'USD', 'rate': '0.69' },
+    { 'from': 'USD', 'to': 'EUR', 'rate': '0.64' },
+    { 'from': 'EUR', 'to': 'USD', 'rate': '1.56' },
+    { 'from': 'AUD', 'to': 'CAD', 'rate': '0.75' },
+    { 'from': 'CAD', 'to': 'AUD', 'rate': '1.33' }
 ]
 
-// USD >(0,736)> EUR >(1,366)> CAD
-//    0,736 * 1,366
+// 1,44 * 0,75
 
 function getRateByCurrencies(from, to) {
 
@@ -18,21 +19,27 @@ function getRateByCurrencies(from, to) {
         return match.rate
     }
 
-    const fromPair = rates.find(function(item) {
+    const fromPairs = rates.filter(function(item) {
         return item.from === from
     })
-    // { 'from': 'USD', 'to': 'EUR', 'rate': '0.736' },
+    // { 'from': 'EUR', 'to': 'AUD', 'rate': '0.62' },
+    // { 'from': 'EUR', 'to': 'CAD', 'rate': '1.11' },
 
-    const toPair = rates.find(function(item) {
+    const toPairs = rates.filter(function(item) {
         return item.to === to
     })
-    // { 'from': 'EUR', 'to': 'CAD', 'rate': '1.366' }
+    // [{ 'from': 'CAD', 'to': 'USD', 'rate': '0.82' }],
 
-    if (fromPair.to === toPair.from) {
-        return fromPair.rate * toPair.rate
+    let rate = null
+    for (let i = 0; i < fromPairs.length; ++i) {
+        for (let j = 0; j < toPairs.length; ++j) {
+            if (fromPairs[i].to === toPairs[j].from) {
+                rate = fromPairs[i].rate * toPairs[j].rate
+            }
+        }
     }
 
-    return 'not found'
+    return rate || 'not found'
 }
 
 console.log(getRateByCurrencies('USD', 'CAD'))
